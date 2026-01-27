@@ -24,6 +24,7 @@ jobs:
       uses: aquasecurity/trivy-action@master
       with:
         scan-type: fs # Use filesystem scan for the entire repository
+        scan-ref: .
         scanners: secret # Only enable the secret scanner
         format: sarif # SARIF format is required for GitHub Code Scanning integration
         output: trivy-results.sarif
