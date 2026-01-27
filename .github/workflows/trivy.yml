@@ -29,7 +29,7 @@ jobs:
         format: sarif # SARIF format is required for GitHub Code Scanning integration
         output: trivy-results.sarif
         severity: CRITICAL,HIGH,MEDIUM,LOW # Define the severities to report
-        exit-code: 0 # Set exit code to 0 to allow the pipeline to continue even if issues are found, so results can be uploaded
+        exit-code: 1 # Set exit code to 0 to allow the pipeline to continue even if issues are found, so results can be uploaded
         cache-dir: /tmp/trivy-cache # Cache directory to speed up future scans
 
     - name: Upload Trivy scan results to GitHub Security
