@@ -16,3 +16,9 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
+      - name: Build Docker image
+        run: |
+         # docker build -t ${{ secrets.ECR_REPOSITORY }}:latest .
+          docker build -t web:latest .
+
+
