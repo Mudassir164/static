@@ -30,6 +30,6 @@ jobs:
             ]}' \
             --query "Command.CommandId" \
             --output text)
-                  --output text)
+                 
       
                 echo "Command ID: $COMMAND_ID"
