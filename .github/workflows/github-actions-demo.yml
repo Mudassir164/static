@@ -26,7 +26,7 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --comment "Deploy from GitHub Actions" \
             --parameters '{"commands":[
-              "sudo -u ubuntu bash -c \"cd /home/ubuntu/myproject && git pull origin main && npm install && pm2 restart app\""
+              "sudo -u ubuntu bash -c \"cd /home/ubuntu/ && touch helloo.txt\""
             ]}' \
             --query "Command.CommandId" \
             --output text)
