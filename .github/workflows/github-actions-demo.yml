@@ -1,24 +1,36 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: Deploy to EC2 via SSM
+
+on:
+  push:
+    branches: [ main ]
+
 jobs:
-  Explore-GitHub-Actions:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v5
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
-      - name: Build Docker image
-        run: |
-         # docker build -t ${{ secrets.ECR_REPOSITORY }}:latest .
-          docker build -t web:latest .
+      - name: Checkout code
+        uses: actions/checkout@v4
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Deploy via SSM
+        run: |
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy from GitHub Actions" \
+            --parameters '{"commands":[
+              "cd /home/ubuntu/",
+              "touch hello.txt"
+             
+            ]}' \
+            --query "Command.CommandId" \
+            --output text)
+
+          echo "Command ID: $COMMAND_ID"
